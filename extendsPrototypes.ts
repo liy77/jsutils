@@ -48,7 +48,8 @@ import {
     CacheMap,
     findWhere,
     CacheMapEntries,
-    compare
+    compare,
+    CompareResult
 } from "./src/index.js"
 
 import * as RegExtensions from "./src/regexp.js";
@@ -98,7 +99,7 @@ declare global {
         unicodeWords (): RegExpMatchArray;
         hasUnicodeWord (): boolean;
         isEqual <T> (o: T): this is T;
-        compareTo (str: string): { accuracy: number, differences: Array<string> };
+        compareTo (str: string): CompareResult;
     }
 
     interface Array<T> {
