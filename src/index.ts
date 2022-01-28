@@ -1157,12 +1157,12 @@ export class CacheMap<K, V> extends Map<K, V> {
         return new CacheMap(this.limit, iteratorToArray(this.entries()).reverse());
     }
 
-    public indexOf (value: V) {
+    public indexOf (value: V): number {
         const arr = iteratorToArray(this.values());
         return arr.indexOf(value);
     }
 
-    public keyOf (value: V) {
+    public keyOf (value: V): K | undefined {
         const indexOf = this.indexOf(value);
         const arr = iteratorToArray(this.keys());
 
@@ -1259,6 +1259,15 @@ export function call <T extends (...args: Array<any>) => any> (thisArg: any, fn:
 
 export function isIterator (o: unknown) {
     return isObject(o) && Symbol.iterator in o;
+}
+
+export function random <T> (arr?: Array<T>): number | T | undefined {
+    if (isArray(arr)) {
+        const index = Math.floor(Math.random() * arr.length);
+        return arr[index];
+    }
+
+    return Math.random();
 }
 
 export * from "./regexp.js";
