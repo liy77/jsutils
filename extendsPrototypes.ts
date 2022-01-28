@@ -49,7 +49,8 @@ import {
     findWhere,
     CacheMapEntries,
     compare,
-    CompareResult
+    CompareResult,
+    random
 } from "./src/index.js"
 
 import * as RegExtensions from "./src/regexp.js";
@@ -119,6 +120,7 @@ declare global {
         isConstructorArray (): this is ClassType<T>;
         isEqual <T> (o: T): this is T;
         where (query: any): T;
+        random (): T;
         moveItems (...itensToMove: Array<{
             new: number;
             old: number;
@@ -268,6 +270,7 @@ setProperty(Array, "isUndefinedArray", isUndefinedArray);
 setProperty(Array, "isRegExpArray", isRegExpArray);
 setProperty(Array, "isBooleanArray", isBooleanArray);
 setProperty(Array, "isConstructorArray", isConstructorArray)
+setProperty(Array, "random", random);
 setProperty(Array, "moveItems", function (...items: Array<any>) {
     return moveItemsInArray(this, ...items);
 }, true, true);
