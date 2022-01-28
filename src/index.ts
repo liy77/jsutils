@@ -1270,4 +1270,14 @@ export function random <T> (arr?: Array<T>): number | T | undefined {
     return Math.random();
 }
 
+export function forOwn <T extends object> (o: T, fn: (value: any, key: string, object: T) => void): void {
+    if (!isObject(o)) {
+        return;
+    }
+    
+    for (const key of Object.keys(o)) {
+        fn(o[key], key, o);
+    }
+}
+
 export * from "./regexp.js";
