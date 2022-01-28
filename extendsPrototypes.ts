@@ -50,7 +50,8 @@ import {
     CacheMapEntries,
     compare,
     CompareResult,
-    random
+    random,
+    forOwn
 } from "./src/index.js"
 
 import * as RegExtensions from "./src/regexp.js";
@@ -121,6 +122,7 @@ declare global {
         isEqual <T> (o: T): this is T;
         where (query: any): T;
         random (): T;
+        forOwn (fn: (value: any, key: string, array: Array<T>) => void): void;
         moveItems (...itensToMove: Array<{
             new: number;
             old: number;
@@ -129,6 +131,7 @@ declare global {
 
     interface Object {
         isEqual <T> (o: T): this is T;
+        forOwn (fn: (value: any, key: string, object: this) => void): void;
     }
 
     interface ObjectConstructor {
@@ -271,6 +274,9 @@ setProperty(Array, "isRegExpArray", isRegExpArray);
 setProperty(Array, "isBooleanArray", isBooleanArray);
 setProperty(Array, "isConstructorArray", isConstructorArray)
 setProperty(Array, "random", random);
+setProperty(Array, "forOwn", function <T> (fn: (value: any, key: string, array: Array<T>) => void) {
+    return forOwn(this, fn);
+}, true, true);
 setProperty(Array, "moveItems", function (...items: Array<any>) {
     return moveItemsInArray(this, ...items);
 }, true, true);
@@ -294,6 +300,9 @@ setStatic(Object, "objects", {
 });
 setProperty(Object, "isEqual", function (o: any) {
     return isEqual(this, o);
+}, true, true);
+setProperty(Object, "forOwn", function (fn: (value: any, key: string, object: object) => void) {
+    return forOwn(this, fn);
 }, true, true);
 
 setProperty(Boolean, "isFalse", isFalse);
