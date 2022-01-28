@@ -1,0 +1,10 @@
+{
+	"name": "snotsw",
+	"types": "./@types",
+	"scripts": {
+		"test": "tsc && node dist/test"
+	},
+	"devDependencies": {
+		"@types/node": "^17.0.10"
+	}
+}
