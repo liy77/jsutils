@@ -1280,4 +1280,22 @@ export function forOwn <T extends object> (o: T, fn: (value: any, key: string, o
     }
 }
 
+export function shuffle <T extends Array<T>> (arr: T) {
+    if (!isArray(arr)) {
+        return [];
+    }
+
+    let r = arr.length, t: any, i: number;
+
+    while (r) {
+        i = Math.floor(Math.random() * r--);
+
+        t = arr[r];
+        arr[r] = arr[i]
+        arr[i] = t;
+    }
+
+    return arr;
+}
+
 export * from "./regexp.js";

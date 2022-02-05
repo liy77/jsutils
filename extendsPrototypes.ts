@@ -51,7 +51,8 @@ import {
     compare,
     CompareResult,
     random,
-    forOwn
+    forOwn,
+    shuffle
 } from "./src/index.js"
 
 import * as RegExtensions from "./src/regexp.js";
@@ -120,6 +121,7 @@ declare global {
         isBooleanArray (): this is Array<boolean>;
         isConstructorArray (): this is ClassType<T>;
         isEqual <T> (o: T): this is T;
+        shuffle (): Array<T>;
         where (query: any): T;
         random (): T;
         forOwn (fn: (value: any, key: string, array: Array<T>) => void): void;
@@ -274,6 +276,7 @@ setProperty(Array, "isRegExpArray", isRegExpArray);
 setProperty(Array, "isBooleanArray", isBooleanArray);
 setProperty(Array, "isConstructorArray", isConstructorArray)
 setProperty(Array, "random", random);
+setProperty(Array, "shuffle", shuffle);
 setProperty(Array, "forOwn", function <T> (fn: (value: any, key: string, array: Array<T>) => void) {
     return forOwn(this, fn);
 }, true, true);
