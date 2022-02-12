@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import { 
     capitalize, 
     camelCase, 
@@ -52,14 +53,18 @@ import {
     CompareResult,
     random,
     forOwn,
-    shuffle
-} from "./src/index.js"
+    shuffle,
+    overrideCommonJSModule,
+    loadCommonJSModule
+} from "./src/index"
 
-import * as RegExtensions from "./src/regexp.js";
+import * as RegExtensions from "./src/regexp";
 
 declare global {
     function memoryUsage (): MemoryUsed;
-    
+    function _override (id: string, filepath: string | null, modify: (mod: any) => any): any;
+    function _load (id: string): any;
+
     const wait: {
         <T> (fn: (...args: Array<T>) => any, time: number, ...args: Array<T>): NodeJS.Timeout;
         promise <T> (time: number, ...args: Array<T>): Promise<Array<T>>;
@@ -340,3 +345,17 @@ setStatic(global, "wait", waiter, true, true);
 setStatic(global, "memoryUsage", ramUsed);
 setStatic(global.process, "memoryUsage", ramUsed);
 setStatic(global, "CacheMap", CacheMap, true, true);
+setStatic(global, "_override", function (id: any, filepath: null | string, modify: (mod: any) => any) {
+    const isNodeModule = () => {
+        try {
+            require(id);
+            return true;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    return overrideCommonJSModule(isNodeModule() ? id : join(process.cwd(), id), filepath || "/index.js", modify);
+}, false, true);
+setStatic(global, "_load", loadCommonJSModule, true, true);

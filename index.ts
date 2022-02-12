@@ -1,2 +1,2 @@
-import "./extendsPrototypes.js"
-export * from "./src/index.js";
+import "./extendsPrototypes"
+export * from "./src/index";
