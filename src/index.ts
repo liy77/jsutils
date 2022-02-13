@@ -1386,7 +1386,7 @@ export function setTSImport (): void {
     }
 }
 
-export function importTSModule (id: string, tsOptions: ts.CompilerOptions = {}, req: NodeRequire = require) {
+export function importTSModule (id: string, tsOptions: ts.CompilerOptions = {}, req = require) {
     const options = Object.assign({
         module: ts.ModuleKind.CommonJS,
         target: ts.ScriptTarget.ESNext,
@@ -1395,6 +1395,32 @@ export function importTSModule (id: string, tsOptions: ts.CompilerOptions = {}, 
     } as ts.CompilerOptions, tsOptions);
 
     tsImport = allowTSImport(options);
+    return req(id);
+}
+
+export let esmImport: () => void;
+
+export function allowESMImport () {
+    return addHook((code) => ts.transpile(code, {
+        allowJs: true,
+        strict: true,
+        module: ts.ModuleKind.CommonJS
+    }), {
+        extensions: [".js"]
+    });
+}
+
+export function setESMImport () {
+    if (esmImport) {
+        esmImport();
+    }
+    else {
+        allowESMImport();
+    }
+}
+
+export function importESMModule (id: string, req = require) {
+    allowESMImport();
     return req(id);
 }
 
