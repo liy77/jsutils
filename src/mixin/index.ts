@@ -2,16 +2,23 @@ import { RawClass } from "../misc";
 
 type Proto<T extends RawClass<any>> = T["prototype"];
 
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I
+) => void
+  ? I
+  : never;
+
 export type MixedArgs<M extends RawClass<any>[]> = {
   [K in keyof M]: keyof ConstructorParameters<M[K]>;
 };
 
-export type MixedInstance<M extends RawClass<any>[]> = {
-  [K in keyof M]: M[K];
-}[number]["prototype"];
+export type MixedInstance<M extends RawClass<any>[]> = UnionToIntersection<{
+  [K in keyof M]: Proto<M[K]>;
+}[number]>;
 
 export type Mixed<M extends RawClass<any>[]> = {
   new (...args: MixedArgs<M>): MixedInstance<M>;
+  prototype: MixedInstance<M>;
 };
 
 export function Mix<M extends Array<any>>(...mixins: M): Mixed<M> {
