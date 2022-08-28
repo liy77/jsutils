@@ -1,4 +1,4 @@
-# Util Types
+# JavaScript Utils
 
 ## Example
 ```js
