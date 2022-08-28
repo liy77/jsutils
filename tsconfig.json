@@ -7,6 +7,9 @@
         "outDir": "./dist",
         "declaration": true,
         "declarationDir": "@types",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "lib": [
+            "ESNext"
+        ]
     }
 }

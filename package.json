@@ -1,5 +1,5 @@
 {
-	"name": "snotsw",
+	"name": "jsutils",
 	"types": "./@types",
 	"scripts": {
 		"test": "tsc && node dist/test"
@@ -7,7 +7,7 @@
 	"devDependencies": {
 		"@types/node": "^17.0.10"
 	},
-	"dependencies": {
+	"optionalDependencies": {
 		"pirates": "^4.0.5",
 		"typescript": "^4.5.5"
 	}
