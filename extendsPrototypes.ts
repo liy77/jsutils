@@ -56,12 +56,16 @@ import {
   hasUnicodeWord,
   compare,
 } from "./src/string";
-import { RawClass } from "./src/misc";
+import { RawClass, nil } from "./src/misc";
 import { Mix } from "./src/mixin";
 import { CacheMapEntries, CacheMap } from "./src/cache";
 
 declare global {
   function memoryUsage(): MemoryUsed;
+  function Mix<
+    B extends RawClass<any, any[]>,
+    M extends RawClass<any, any[]>[]
+  >(Base: B, ...mixins: M): B & M[keyof M];
   function __override(
     id: string,
     filepath: string | null,
@@ -406,6 +410,7 @@ setStatic(Boolean, "isFalse", isFalse, true);
 setStatic(Boolean, "isTrue", isTrue, true);
 
 setStatic(Function, "isConstructor", isConstructor, true);
+setStatic(global, "Mix", Mix, true)
 setStatic(Function, "Mix", Mix, true);
 setProperty(
   Function,
