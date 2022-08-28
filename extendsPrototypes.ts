@@ -63,8 +63,8 @@ import { CacheMapEntries, CacheMap } from "./src/cache";
 declare global {
   function memoryUsage(): MemoryUsed;
   function Mix<
-    B extends RawClass<any, any[]>,
-    M extends RawClass<any, any[]>[]
+    B extends RawClass<any>,
+    M extends RawClass<any>[]
   >(Base: B, ...mixins: M): B & M[keyof M];
   function __override(
     id: string,

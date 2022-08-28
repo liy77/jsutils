@@ -3,9 +3,12 @@ import { Stream } from "node:stream";
 import { isArray } from "./array";
 import type { AnyObject } from "./object";
 
-export type RawClass<T, Keys extends Array<any> = Array<any>> = new (
-  ...args: Keys
-) => T;
+export type RawClass<T, Keys extends Array<any> = Array<any>> = {
+  new(
+    ...args: Keys
+  ): T
+  prototype: T
+};
 
 export type Type =
   | "number"

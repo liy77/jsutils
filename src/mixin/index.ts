@@ -1,40 +1,68 @@
 import { RawClass } from "../misc";
 
-export function Mix<
-  B extends RawClass<any>,
-  M extends Array<RawClass<any>>
->(Base: B, ...mixins: M): B & M[keyof M] {
-  class MixedInstance extends Base {
-    constructor(...args: Array<any>) {
-      super(...args);
+type Proto<T extends RawClass<any>> = T["prototype"];
 
+export type MixedArgs<M extends RawClass<any>[]> = {
+  [K in keyof M]: keyof ConstructorParameters<M[K]>;
+};
+
+export type MixedInstance<M extends RawClass<any>[]> = {
+  [K in keyof M]: M[K];
+}[number]["prototype"];
+
+export type Mixed<M extends RawClass<any>[]> = {
+  new (...args: MixedArgs<M>): MixedInstance<M>;
+};
+
+export function Mix<M extends Array<any>>(...mixins: M): Mixed<M> {
+  const instances = Symbol("instances");
+  class MixedInstance {
+    [instances] = new WeakMap();
+    constructor(...args: any[]) {
+      let i = 0;
       for (const mixin of mixins) {
-        copyProps(this, new mixin());
+        const toExtend = new mixin[i](...(args[i] || []));
+        const extended = extend(this, toExtend);
+
+        this[instances].set(mixin, extended);
+
+        for (const key of Object.keys(toExtend)) {
+          Object.defineProperty(this, key, {
+            configurable: true,
+            enumerable: true,
+            get: () => toExtend[key],
+            set: (value) => (toExtend[key] = value),
+          });
+        }
+        i++;
       }
     }
   }
 
-  for (const mixin of mixins) {
-    copyProps(MixedInstance.prototype, mixin.prototype);
-    copyProps(MixedInstance, mixin);
-  }
+  return MixedInstance;
+}
 
-  return MixedInstance as B & M[keyof M];
+function extend(base: any, extension: RawClass<any>) {
+  return new Proxy(base, {
+    get: (_, prop) => (prop in extension ? extension : base)[prop],
+    set: (_, prop, value) =>
+      !!((prop in extension ? extension : base)[prop] = value),
+  });
 }
 
 function copyProps(target: any, source: any) {
-    Object.getOwnPropertyNames(source)
-      .concat(Object.getOwnPropertyNames(source))
-      .forEach((prop) => {
-        if (
-          !prop.match(
-            /^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/
-          )
+  Object.getOwnPropertyNames(source)
+    .concat(Object.getOwnPropertyNames(source))
+    .forEach((prop) => {
+      if (
+        !prop.match(
+          /^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/
         )
-          Object.defineProperty(
-            target,
-            prop,
-            Object.getOwnPropertyDescriptor(source, prop)
-          );
-      });
+      )
+        Object.defineProperty(
+          target,
+          prop,
+          Object.getOwnPropertyDescriptor(source, prop)
+        );
+    });
 }
